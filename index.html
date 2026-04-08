@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Livenow Studio — Light</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Noto+Serif+KR:wght@300;400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: #ffffff;
+  color: #1a1a1a;
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+  padding: 22px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 1px solid #e0ddd8;
+}
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 300; letter-spacing: 0.3em;
+  color: #c8a97a; text-transform: uppercase; cursor: pointer;
+}
+.logo span { font-style: normal; color: #1a1a1a; }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links li button {
+  background: none; border: none; padding: 0; cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 0.18em;
+  color: #6b6560; text-transform: uppercase;
+  transition: color 0.25s;
+}
+.nav-links li button:hover { color: #c8a97a; }
+
+/* ── PAGES ── */
+.page { display: none; padding-top: 70px; }
+.page.active { display: block; }
+
+/* ── FOOTER ── */
+.site-footer {
+  border-top: 1px solid #e0ddd8;
+  padding: 44px 48px; margin-top: 80px;
+}
+.site-footer .ft-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; letter-spacing: 0.25em; color: #c8a97a; margin-bottom: 14px;
+}
+.site-footer p {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; color: #6b6560; line-height: 2.2;
+}
+
+/* ── HOME ── */
+.hero {
+  padding: 56px 48px 40px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  border-bottom: 1px solid #e0ddd8;
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(54px, 8vw, 104px);
+  font-weight: 300; line-height: 0.88; letter-spacing: -0.02em;
+}
+.hero-title em { font-style: italic; color: #c8a97a; }
+.hero-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 0.15em;
+  color: #6b6560; text-align: right; line-height: 1.9;
+}
+.branch-label {
+  padding: 13px 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 0.2em; color: #c8a97a; text-transform: uppercase;
+  border-bottom: 1px solid #e0ddd8;
+}
+
+/* ── SLIDESHOW ── */
+.slideshow {
+  position: relative; overflow: hidden;
+  background: #f5f5f3; height: 420px;
+}
+.ss-track {
+  display: flex; height: 100%;
+  transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.ss-track .slide {
+  flex: 0 0 33.3333%; height: 100%;
+}
+.ss-track .slide img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.ss-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 42px; height: 42px;
+  background: rgba(255,255,255,0.85); border: 1px solid #e0ddd8;
+  color: #6b6560; font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.25s, color 0.25s; z-index: 10;
+}
+.ss-btn:hover { border-color: #c8a97a; color: #c8a97a; }
+.ss-btn.prev { left: 14px; }
+.ss-btn.next { right: 14px; }
+.ss-dots {
+  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 8px; z-index: 10;
+}
+.ss-dots button {
+  width: 6px; height: 6px; border-radius: 50%;
+  border: none; background: rgba(26,26,26,0.2); cursor: pointer;
+  transition: background 0.25s; padding: 0;
+}
+.ss-dots button.on { background: #c8a97a; }
+
+/* ── INNER PAGES ── */
+.inner { padding: 60px 48px 0; min-height: calc(100vh - 70px); }
+.page-header { margin-bottom: 56px; padding-bottom: 36px; border-bottom: 1px solid #e0ddd8; }
+.page-num { font-family: 'DM Mono', monospace; font-size: 11px; color: #c8a97a; letter-spacing: 0.2em; margin-bottom: 18px; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px, 6vw, 72px); font-weight: 300; line-height: 1; letter-spacing: -0.02em; color: #1a1a1a; }
+
+/* ── GUIDE ── */
+.guide-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+.guide-card { background: #f5f5f3; padding: 38px 34px; border: 1px solid #e0ddd8; transition: border-color 0.25s; }
+.guide-card:hover { border-color: #c8a97a; }
+.guide-num { font-family: 'Cormorant Garamond', serif; font-size: 46px; font-weight: 300; color: #d8d4cf; display: block; margin-bottom: 18px; }
+.guide-card h3 { font-size: 15px; font-weight: 400; color: #c8a97a; margin-bottom: 12px; }
+.guide-card p { font-size: 13px; line-height: 2.1; color: #6b6560; }
+
+/* ── RENTAL ── */
+.sec-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: #6b6560; text-transform: uppercase; margin-bottom: 22px; }
+.rtable { width: 100%; border-collapse: collapse; margin-bottom: 56px; }
+.rtable th { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: #6b6560; text-transform: uppercase; text-align: left; padding: 14px 22px; border-bottom: 1px solid #e0ddd8; }
+.rtable td { padding: 22px; border-bottom: 1px solid #e0ddd8; font-size: 14px; color: #1a1a1a; }
+.rtable tr:hover td { background: #f5f5f3; }
+.price { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: #c8a97a; }
+.tag { font-family: 'DM Mono', monospace; font-size: 10px; padding: 4px 10px; border: 1px solid #e0ddd8; color: #6b6560; }
+
+/* ── BOOKING ── */
+.res-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px,6vw,72px); font-weight: 300;
+  text-align: center; margin-bottom: 56px; color: #1a1a1a; letter-spacing: 0.04em;
+}
+.phone-block { text-align: center; margin-bottom: 72px; }
+.phone-btn {
+  display: inline-block; border: 1px solid #1a1a1a; border-radius: 40px;
+  padding: 11px 46px; font-family: 'DM Mono', monospace;
+  font-size: 12px; letter-spacing: 0.15em; color: #1a1a1a;
+  text-decoration: none; transition: all 0.25s; margin-bottom: 14px;
+}
+.phone-btn:hover { background: #c8a97a; border-color: #c8a97a; color: #0e0d0b; }
+.phone-num { display: block; font-family: 'DM Mono', monospace; font-size: 14px; color: #1a1a1a; margin-bottom: 4px; }
+.phone-hrs { display: block; font-family: 'DM Mono', monospace; font-size: 10px; color: #6b6560; }
+.steps {
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 72px; flex-wrap: wrap; gap: 0;
+}
+.step { display: flex; flex-direction: column; align-items: center; }
+.step-circle {
+  width: 176px; height: 176px; border-radius: 50%;
+  border: 1px solid #e0ddd8;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 22px; text-align: center; transition: border-color 0.25s;
+}
+.step-circle:hover { border-color: #c8a97a; }
+.step-n { font-family: 'Cormorant Garamond', serif; font-size: 30px; color: #c8a97a; margin-bottom: 8px; }
+.step-t { font-size: 11px; line-height: 1.85; color: #6b6560; }
+.step-line { width: 28px; height: 1px; background: #d0ccc7; flex-shrink: 0; }
+
+/* ── SCHEDULE ── */
+.sch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-bottom: 60px; }
+.sch-card {
+  background: #f5f5f3; border: 1px solid #e0ddd8;
+  padding: 56px 48px;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 22px;
+}
+.sch-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: #1a1a1a; }
+.sch-card p { font-family: 'DM Mono', monospace; font-size: 11px; color: #6b6560; line-height: 1.9; letter-spacing: 0.1em; }
+.cal-btn {
+  display: inline-block; border: 1px solid #c8a97a;
+  padding: 13px 36px; font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: #c8a97a; text-decoration: none; transition: all 0.25s;
+}
+.cal-btn:hover { background: #c8a97a; color: #0e0d0b; }
+
+/* ── CONTACT ── */
+.info-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; margin-bottom: 72px; }
+.info-card { background: #f5f5f3; border: 1px solid #e0ddd8; padding: 34px; }
+.info-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: #c8a97a; margin-bottom: 14px; }
+.info-card p { font-size: 13px; color: #6b6560; line-height: 2.1; }
+
+.parking-title { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 300; color: #1a1a1a; margin-bottom: 44px; }
+.p-item { display: grid; grid-template-columns: 220px 1fr; gap: 40px; padding: 28px 0; border-bottom: 1px solid #e0ddd8; }
+.p-item:first-of-type { border-top: 1px solid #e0ddd8; }
+.p-item h4 { font-size: 14px; font-weight: 400; color: #1a1a1a; line-height: 1.7; }
+.p-item p { font-size: 13px; color: #6b6560; line-height: 2.1; }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  nav { padding: 18px 20px; }
+  .nav-links { gap: 14px; }
+  .nav-links li button { font-size: 9px; }
+  .hero { padding: 36px 20px 28px; flex-direction: column; gap: 14px; }
+  .hero-sub { text-align: left; }
+  .inner { padding: 40px 20px 0; }
+  .slideshow { height: 260px; }
+  .ss-track .slide { flex: 0 0 100%; }
+  .guide-grid { grid-template-columns: 1fr; }
+  .sch-grid { grid-template-columns: 1fr; }
+  .info-grid { grid-template-columns: 1fr 1fr; }
+  .p-item { grid-template-columns: 1fr; gap: 6px; }
+  .steps { gap: 12px; }
+  .step-line { display: none; }
+  .site-footer { padding: 36px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="go('home')">LIVENOW<span> Studio</span></div>
+  <ul class="nav-links">
+    <li><button onclick="go('guide')">가이드</button></li>
+    <li><button onclick="go('rental')">렌탈</button></li>
+    <li><button onclick="go('booking')">예약</button></li>
+    <li><button onclick="go('schedule')">스케줄</button></li>
+    <li><button onclick="go('contact')">문의하기</button></li>
+  </ul>
+</nav>
+
+<!-- ════════ HOME ════════ -->
+<div id="pg-home" class="page active">
+  <div class="hero">
+    <h1 class="hero-title">Livenow<br><em>Studio</em></h1>
+    <div class="hero-sub">서울 — 신사점 · 압구정점<br>MON–SUN 07:00–23:00<br>RENTAL STUDIO</div>
+  </div>
+
+  <div class="branch-label">신사점 — 서울 서초구 강남대로 101길 36 B1</div>
+  <div class="slideshow" id="sw-sinsa">
+    <div class="ss-track" id="tr-sinsa">
+      <!-- 신사점 사진 추가: <div class="slide"><img src="파일명.jpg" alt="신사점"></div> -->
+    </div>
+    <button class="ss-btn prev" onclick="mv('sinsa',-1)">&#8592;</button>
+    <button class="ss-btn next" onclick="mv('sinsa',1)">&#8594;</button>
+    <div class="ss-dots" id="dt-sinsa"></div>
+  </div>
+
+  <div class="branch-label" style="margin-top:2px">압구정점 — 서울 강남구 논현로 813 영석빌딩 B2</div>
+  <div class="slideshow" id="sw-apgu">
+    <div class="ss-track" id="tr-apgu">
+      <div class="slide"><img src="p13.jpeg" alt="압구정점"></div>
+      <div class="slide"><img src="p12.jpeg" alt="압구정점"></div>
+      <div class="slide"><img src="p11.jpeg" alt="압구정점"></div>
+      <div class="slide"><img src="p10.jpeg" alt="압구정점"></div>
+      <div class="slide"><img src="p09.jpeg" alt="압구정점"></div>
+      <div class="slide"><img src="p08.jpeg" alt="압구정점"></div>
+      <div class="slide"><img src="p07.jpeg" alt="압구정점"></div>
+      <div class="slide"><img src="p06.jpeg" alt="압구정점"></div>
+      <div class="slide"><img src="p01.jpeg" alt="압구정점"></div>
+      <div class="slide"><img src="p04.jpeg" alt="압구정점"></div>
+      <div class="slide"><img src="p03.jpeg" alt="압구정점"></div>
+      <div class="slide"><img src="p02.jpeg" alt="압구정점"></div>
+    </div>
+    <button class="ss-btn prev" onclick="mv('apgu',-1)">&#8592;</button>
+    <button class="ss-btn next" onclick="mv('apgu',1)">&#8594;</button>
+    <div class="ss-dots" id="dt-apgu"></div>
+  </div>
+
+  <div class="site-footer">
+    <div class="ft-logo">Livenow Studio</div>
+    <p>신사점 : 서울 서초구 강남대로 101길 36 지하1층</p>
+    <p>압구정점 : 서울 강남구 논현로 813 영석빌딩 지하 2층</p>
+    <p>02-000-0000 &nbsp;|&nbsp; studio_livenow@gmail.com &nbsp;|&nbsp; @studio_livenow</p>
+  </div>
+</div>
+
+<!-- ════════ GUIDE ════════ -->
+<div id="pg-guide" class="page">
+  <div class="inner">
+    <div class="page-header">
+      <div class="page-num">01 — GUIDE</div>
+      <h2 class="page-title">이용 안내</h2>
+    </div>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <span class="guide-num">01</span>
+        <h3>예약 방법</h3>
+        <p>홈페이지의 스케줄을 확인한 뒤 원하시는 날짜와 시간을 예약 메뉴의 링크 또는 해당 연락처(02-000-0000)로 문의해주세요. 예약 확정은 입금 후 문자로 안내됩니다.</p>
+      </div>
+      <div class="guide-card">
+        <span class="guide-num">02</span>
+        <h3>입장 및 퇴장</h3>
+        <p>예약 시간 5분 전 도착을 권장합니다. 퇴장 시 원상 복구 및 촬영 장비 정리 후 체크아웃 해주세요.</p>
+      </div>
+      <div class="guide-card">
+        <span class="guide-num">03</span>
+        <h3>시설 이용</h3>
+        <p>시설 관리, 범죄 예방, 출입 인원 확인 등을 위한 CCTV가 설치되어 있습니다. 화장실, 탈의실 외 모든 구역 CCTV 녹화중입니다.<br><br>실내 출입 시 슬리퍼 착용 필수이며, 호리존 위는 슬리퍼 벗고 이용 바랍니다. 부득이한 경우 신발 밑창에 테이핑 후 호리존 출입 바랍니다.<br><br>호리존·시설 파손 또는 오염 시 복구 비용 35만원을 청구합니다. 파손 시 추가금 있을 수 있습니다.<br><br>호리존 화이트 페인팅 월 1회 정기적으로 진행합니다. 칠 상태에 민감한 촬영은 사전 답사를 권장 드립니다. 캘린더에 표시된 페인팅 일자 이후에 예약해주세요. 정기 스케줄 외 칠 요청은 추가 비용 35만원이 발생됩니다.</p>
+      </div>
+      <div class="guide-card">
+        <span class="guide-num">04</span>
+        <h3>취소 및 환불</h3>
+        <p>이용 48시간 전 취소 시 전액 환불. 24시간 전 취소 시 50% 환불. 당일 취소는 환불 불가합니다.</p>
+      </div>
+      <div class="guide-card">
+        <span class="guide-num">05</span>
+        <h3>금지 사항</h3>
+        <p>음식물 반입 금지 (음료 가능). 흡연 금지. 타인을 침해하는 콘텐츠 촬영 금지.</p>
+      </div>
+      <div class="guide-card">
+        <span class="guide-num">06</span>
+        <h3>제공 장비</h3>
+        <p>배경지, 스탠드, 반사판, 조명 기본 제공. 카메라 및 렌즈는 별도 렌탈 가능합니다.</p>
+      </div>
+    </div>
+  </div>
+  <div class="site-footer">
+    <div class="ft-logo">Livenow Studio</div>
+    <p>신사점 : 서울 서초구 강남대로 101길 36 지하1층</p>
+    <p>압구정점 : 서울 강남구 논현로 813 영석빌딩 지하 2층</p>
+    <p>02-000-0000 &nbsp;|&nbsp; studio_livenow@gmail.com &nbsp;|&nbsp; @studio_livenow</p>
+  </div>
+</div>
+
+<!-- ════════ RENTAL ════════ -->
+<div id="pg-rental" class="page">
+  <div class="inner">
+    <div class="page-header">
+      <div class="page-num">02 — RENTAL</div>
+      <h2 class="page-title">렌탈 요금</h2>
+    </div>
+
+    <div class="sec-label">기본 요금</div>
+    <table class="rtable">
+      <thead><tr><th>항목</th><th>내용</th></tr></thead>
+      <tbody>
+        <tr><td><strong>시간당 요금</strong></td><td><span class="price">30,000</span> 원 / 1시간</td></tr>
+        <tr><td><strong>최소 예약 시간</strong></td><td>4시간</td></tr>
+        <tr><td><strong>기준 인원</strong></td><td>3명</td></tr>
+        <tr><td><strong>인원 추가 요금</strong></td><td>기준 초과 1인당 <span class="price">5,000</span> 원 / 1시간</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sec-label">무료 장비</div>
+    <table class="rtable">
+      <thead><tr><th>장비</th><th>수량</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td>Forza 300b</td><td>6개</td><td><span class="tag">무료</span></td></tr>
+        <tr><td>스탠드</td><td>다수</td><td><span class="tag">무료</span></td></tr>
+        <tr><td>책상</td><td>다수</td><td><span class="tag">무료</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="sec-label">유료 장비</div>
+    <table class="rtable">
+      <thead><tr><th>장비</th><th>요금</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td>플로피 고보</td><td>별도 문의</td><td><span class="tag">유료</span></td></tr>
+        <tr><td>TV</td><td>별도 문의</td><td><span class="tag">유료</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="site-footer">
+    <div class="ft-logo">Livenow Studio</div>
+    <p>신사점 : 서울 서초구 강남대로 101길 36 지하1층</p>
+    <p>압구정점 : 서울 강남구 논현로 813 영석빌딩 지하 2층</p>
+    <p>02-000-0000 &nbsp;|&nbsp; studio_livenow@gmail.com &nbsp;|&nbsp; @studio_livenow</p>
+  </div>
+</div>
+
+<!-- ════════ BOOKING ════════ -->
+<div id="pg-booking" class="page">
+  <div class="inner">
+    <div class="page-header">
+      <div class="page-num">03 — BOOKING</div>
+    </div>
+
+    <p class="res-title">reservation</p>
+
+    <div class="phone-block">
+      <div style="display:flex;justify-content:center;gap:80px;margin-bottom:0;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+          <!-- 카카오 링크 추가 시 href="" 안에 URL 입력 -->
+          <a class="phone-btn" href="" target="_blank">Kakao</a>
+          <span class="phone-num" style="font-size:12px;color:#7a7068;">카카오톡 채널</span>
+          <span class="phone-hrs">MON – SUN &nbsp; 07:00 – 23:00</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+          <a class="phone-btn" href="tel:02-000-0000">Phone</a>
+          <span class="phone-num">02-000-0000</span>
+          <span class="phone-hrs">MON – SUN &nbsp; 07:00 – 23:00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-circle">
+          <div class="step-n">1</div>
+          <div class="step-t">스케줄에서<br>예약 가능일 확인</div>
+        </div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-circle">
+          <div class="step-n">2</div>
+          <div class="step-t"><a href="" target="_blank" style="color:#c8a97a;text-decoration:underline;">카카오톡 채널</a> 또는<br>전화로 문의<br><br>예약지점 / 연락처<br>날짜 / 시간 / 인원</div>
+        </div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-circle">
+          <div class="step-n">3</div>
+          <div class="step-t">담당자 확인 후<br>가능 여부,<br>유의사항 회신</div>
+        </div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-circle">
+          <div class="step-n">4</div>
+          <div class="step-t">전액 입금<br><br><span style="font-size:10px;color:#1a1a1a">기업은행<br>274-099358-04-019<br>(주) 라이브나우</span></div>
+        </div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-circle">
+          <div class="step-n">5</div>
+          <div class="step-t">예약 확정<br>스케줄에서<br>예약자 이름 확인</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="site-footer">
+    <div class="ft-logo">Livenow Studio</div>
+    <p>신사점 : 서울 서초구 강남대로 101길 36 지하1층</p>
+    <p>압구정점 : 서울 강남구 논현로 813 영석빌딩 지하 2층</p>
+    <p>02-000-0000 &nbsp;|&nbsp; studio_livenow@gmail.com &nbsp;|&nbsp; @studio_livenow</p>
+  </div>
+</div>
+
+<!-- ════════ SCHEDULE ════════ -->
+<div id="pg-schedule" class="page">
+  <div class="inner">
+    <div class="page-header">
+      <div class="page-num">04 — SCHEDULE</div>
+      <h2 class="page-title">예약 현황</h2>
+    </div>
+    <div class="sch-grid">
+      <div class="sch-card">
+        <h3>신사점</h3>
+        <p>서울 서초구 강남대로 101길 36 지하1층<br>MON – SUN &nbsp; 07:00 – 23:00</p>
+        <!-- 구글 캘린더 공유 링크로 교체하세요 -->
+        <a class="cal-btn" href="https://calendar.google.com" target="_blank">캘린더 보기</a>
+      </div>
+      <div class="sch-card">
+        <h3>압구정점</h3>
+        <p>서울 강남구 논현로 813 영석빌딩 지하 2층<br>MON – SUN &nbsp; 07:00 – 23:00</p>
+        <!-- 구글 캘린더 공유 링크로 교체하세요 -->
+        <a class="cal-btn" href="https://calendar.google.com" target="_blank">캘린더 보기</a>
+      </div>
+    </div>
+  </div>
+  <div class="site-footer">
+    <div class="ft-logo">Livenow Studio</div>
+    <p>신사점 : 서울 서초구 강남대로 101길 36 지하1층</p>
+    <p>압구정점 : 서울 강남구 논현로 813 영석빌딩 지하 2층</p>
+    <p>02-000-0000 &nbsp;|&nbsp; studio_livenow@gmail.com &nbsp;|&nbsp; @studio_livenow</p>
+  </div>
+</div>
+
+<!-- ════════ CONTACT ════════ -->
+<div id="pg-contact" class="page">
+  <div class="inner">
+    <div class="page-header">
+      <div class="page-num">05 — CONTACT</div>
+      <h2 class="page-title">문의하기</h2>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>위치</h3>
+        <p><strong>신사점</strong><br>서울 서초구 강남대로 101길 36 지하 1층<br><br><strong>압구정점</strong><br>서울 강남구 논현로 813 영석빌딩 지하 2층</p>
+      </div>
+      <div class="info-card">
+        <h3>운영 시간</h3>
+        <p>월 – 일<br>07:00 – 23:00<br><br>연중무휴</p>
+      </div>
+      <div class="info-card">
+        <h3>연락처</h3>
+        <p>Tel. 02-000-0000<br>Email. studio_livenow@gmail.com<br>Instagram. @studio_livenow</p>
+      </div>
+      <div class="info-card">
+        <h3>계좌 정보</h3>
+        <p>기업은행<br>274-099358-04-019<br>예금주: (주) 라이브나우</p>
+      </div>
+    </div>
+
+    <h2 class="parking-title">주차 안내</h2>
+    <div class="p-item">
+      <h4>짐 상하차 임시 정차</h4>
+      <p>별관 1층 '뉴매터' 카페 앞에서 임시로 장비, 짐 상하차 가능합니다.</p>
+    </div>
+    <div class="p-item">
+      <h4>기계 주차 불가</h4>
+      <p>기계 주차장 차량 낙상 사고가 잦습니다. 기계 주차 이용 불가합니다. 안내 무시에 따른 사고 발생 시 사용자 개인의 책임이며 스튜디오는 책임을 지지 않습니다. 모든 차량은 인근 외부 주차장 이용 바랍니다.</p>
+    </div>
+    <div class="p-item">
+      <h4>동방 유료 민영 주차장</h4>
+      <p>서울 강남구 도산대로23길 18 신사파크빌<br>기본 30분 3,000원 / 120분 12,000원<br>도보 3분 거리</p>
+    </div>
+    <div class="p-item">
+      <h4>유림아트홀 주차장</h4>
+      <p>서울 강남구 압구정로28길 49<br>30분 3,000원 / 일 최대 20,000원<br>도보 4분 거리</p>
+    </div>
+    <div class="p-item">
+      <h4>신구초교 공영 주차장</h4>
+      <p>서울특별시 강남구 압구정로 18길 28 신구 초등학교<br>30분 1,800원 / 1시간 3,600원<br>도보 7분 거리</p>
+    </div>
+  </div>
+  <div class="site-footer">
+    <div class="ft-logo">Livenow Studio</div>
+    <p>신사점 : 서울 서초구 강남대로 101길 36 지하1층</p>
+    <p>압구정점 : 서울 강남구 논현로 813 영석빌딩 지하 2층</p>
+    <p>02-000-0000 &nbsp;|&nbsp; studio_livenow@gmail.com &nbsp;|&nbsp; @studio_livenow</p>
+  </div>
+</div>
+
+<script>
+/* ── 페이지 전환 ── */
+function go(id) {
+  var pages = document.querySelectorAll('.page');
+  for (var i = 0; i < pages.length; i++) {
+    pages[i].classList.remove('active');
+  }
+  document.getElementById('pg-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ── 슬라이드 ── */
+var cur = { sinsa: 0, apgu: 0 };
+
+function initSS(id) {
+  var track = document.getElementById('tr-' + id);
+  var dots  = document.getElementById('dt-' + id);
+  var count = track.children.length;
+  if (count === 0) return;
+  var perPage = window.innerWidth <= 768 ? 1 : 3;
+  var pages = Math.ceil(count / perPage);
+  dots.innerHTML = '';
+  for (var i = 0; i < pages; i++) {
+    var b = document.createElement('button');
+    if (i === 0) b.className = 'on';
+    b.setAttribute('data-id', id);
+    b.setAttribute('data-p', i);
+    b.onclick = function() { goSS(this.getAttribute('data-id'), +this.getAttribute('data-p')); };
+    dots.appendChild(b);
+  }
+}
+
+function goSS(id, p) {
+  var track = document.getElementById('tr-' + id);
+  var wrap  = document.getElementById('sw-' + id);
+  var count = track.children.length;
+  var perPage = window.innerWidth <= 768 ? 1 : 3;
+  var pages = Math.ceil(count / perPage);
+  p = (p + pages) % pages;
+  cur[id] = p;
+  track.style.transform = 'translateX(-' + (p * wrap.offsetWidth) + 'px)';
+  var btns = document.querySelectorAll('#dt-' + id + ' button');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].className = (i === p) ? 'on' : '';
+  }
+}
+
+function mv(id, dir) {
+  var track = document.getElementById('tr-' + id);
+  var perPage = window.innerWidth <= 768 ? 1 : 3;
+  var pages = Math.ceil(track.children.length / perPage);
+  if (pages === 0) return;
+  goSS(id, cur[id] + dir);
+}
+
+initSS('sinsa');
+initSS('apgu');
+</script>
+</body>
+</html>
